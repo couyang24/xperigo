@@ -54,11 +54,11 @@ The first question can be answered by looking at the structure of the dataset. T
 and **`r ncol(data)`** variables(columns).
 
 
-### First 15 rows with selected columns
+### First 200 rows with selected columns
 
 ```{r  message=FALSE, warning=FALSE}
 data %>% 
-  # head(15) %>% 
+  head(200) %>%
   datatable(filter = 'top', options = list(
   pageLength = 15, autoWidth = TRUE
 ))
@@ -94,7 +94,6 @@ As the data range section shows, some data entries for latitude and longitude ar
 
 ```{r  message=FALSE, warning=FALSE}
 data <- data %>% filter(LATITUDE>0, LONGITUDE<-72, LONGITUDE>-75)
-write_csv(data,"processed.csv")
 ```
 
 
