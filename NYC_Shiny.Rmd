@@ -35,7 +35,7 @@ Let's continue our journey. First of all, I have to load the packages and the da
 # pacman package install required packages if not available 
 if (!require("pacman")) install.packages("pacman") 
 pacman::p_load(tidyverse, DT, lubridate, leaflet, leaflet.extras, maps, data.table, ggthemes, rebus, clue, shiny)
-data <- fread("processed.csv", stringsAsFactors = F, data.table = FALSE, na.strings=c("NA","NaN","?", ""))
+data <- fread("input/processed.csv", stringsAsFactors = F, data.table = FALSE, na.strings=c("NA","NaN","?", ""))
 # data <- read.csv("green_tripdata_2016-02.csv", stringsAsFactors = F)
 # data <- fread("green_tripdata_2016-02v2.csv", stringsAsFactors = F, data.table = FALSE, na.strings=c("NA","NaN","?", ""))
 
