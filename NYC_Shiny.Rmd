@@ -1,5 +1,5 @@
 ---
-title: "Green Taxi Case Study Part2"
+title: "NYC Car Accident Analysis - Part2"
 author: "Chengran Ouyang"
 date: "`r format(Sys.Date())`"
 output:
@@ -34,21 +34,10 @@ Let's continue our journey. First of all, I have to load the packages and the da
 ```{r results='hide', message=FALSE, warning=FALSE}
 # pacman package install required packages if not available 
 if (!require("pacman")) install.packages("pacman") 
-pacman::p_load(tidyverse, DT, lubridate, leaflet, leaflet.extras, maps, data.table, ggthemes, rebus, clue)
-data <- fread("green_tripdata_2016-02v2.csv", stringsAsFactors = F, data.table = FALSE, na.strings=c("NA","NaN","?", ""))
+pacman::p_load(tidyverse, DT, lubridate, leaflet, leaflet.extras, maps, data.table, ggthemes, rebus, clue, shiny)
+data <- fread("processed.csv", stringsAsFactors = F, data.table = FALSE, na.strings=c("NA","NaN","?", ""))
 # data <- read.csv("green_tripdata_2016-02.csv", stringsAsFactors = F)
 # data <- fread("green_tripdata_2016-02v2.csv", stringsAsFactors = F, data.table = FALSE, na.strings=c("NA","NaN","?", ""))
-data[,which(str_detect(names(data),"amount|fee|Extra|fee|Pay|tax|ID|charge"))] <- NULL
-data <- data %>% filter(Pickup_longitude > -75, Pickup_longitude < -73, Pickup_latitude > 40.4, Pickup_latitude <41,
-                        Dropoff_longitude!=0,Dropoff_latitude!=0)
-data <- data %>% mutate(lpep_pickup_datetime = ymd_hms(lpep_pickup_datetime),
-                pickup_hour=hour(lpep_pickup_datetime)+1,
-                pickup_weekday=as.factor(weekdays(lpep_pickup_datetime)),
-                pickup_weekend=if_else(pickup_weekday=='Saturday'|pickup_weekday=='Sunday','Weekend','Weekday'),
-                Lpep_dropoff_datetime = ymd_hms( Lpep_dropoff_datetime),
-                dropoff_hour=hour(lpep_pickup_datetime)+1,
-                dropoff_weekday=as.factor(weekdays(lpep_pickup_datetime)))
-
 
 ```
 
@@ -60,24 +49,22 @@ Then, I loaded the data_kmeans model, new color palette, and Icon.
 
 
 ```{r results='hide', message=FALSE, warning=FALSE}
-data_coord <- data %>% filter(Trip_type==1) %>% select(Pickup_longitude, Pickup_latitude)
-data1 <- data %>% filter(Trip_type==1)
+data1 <- data
 set.seed(0)
-data_kmeans <- data_coord %>% kmeans(50,nstart=20)
+# data_kmeans <- data_coord %>% kmeans(50,nstart=20)
 # save(data_kmeans, file = "data_kmeans.rda")
-# load("data_kmeans.rda")
+load("input/data_kmeans.rda")
 
-data1 <- data %>% filter(Trip_type==1)
 data1$cluster <- data_kmeans$cluster
 
 pal <- colorNumeric(
   palette = "Blues",
   domain = data$cluster)
 
-greentaxi2 <- makeIcon(
-  iconUrl = "https://i.imgur.com/6rw618Q.png",
-  iconWidth = 18, iconHeight = 15,
-  iconAnchorX = 9, iconAnchorY = 19
+greentaxi <- makeIcon(
+  iconUrl = "https://i.imgur.com/UVfnHVr.png",
+  iconWidth = 38, iconHeight = 35,
+  iconAnchorX = 19, iconAnchorY = 39
 )
 
 ```
@@ -94,7 +81,7 @@ set.seed(0)
 data1 %>% sample_n(size=10000) %>% 
   leaflet() %>% 
   addProviderTiles(providers$Esri.NatGeoWorldMap) %>%
-  addCircleMarkers(~Pickup_longitude, ~Pickup_latitude, radius = 1,
+  addCircleMarkers(~LONGITUDE, ~LATITUDE, radius = 1,
                    color = ~pal(cluster), fillOpacity = 0.001)
 ```
 
@@ -102,9 +89,9 @@ data1 %>% sample_n(size=10000) %>%
 # Shiny App
 
 
-## The final mission to Answer Question 4
+## The final mission for the last objective
 
-I set up the input options for longitude and latitude with sliders. Once that data is input, the program would make a prediction, for which cluster it belongs to, based on the input and kmeans model. Then, it would give 20 recommended pick up spots within the cluster as well as the closest pick up spot among the Top 20.
+I set up the input options for longitude and latitude with sliders. Once that data is input, the program would make a prediction, for which cluster it belongs to, based on the input and kmeans model. Then, it would give 20 recommended accident spots within the cluster as well as the closest accident spot among the Top 20.
 
 ```{r echo=FALSE}
 inputPanel(
@@ -116,33 +103,33 @@ inputPanel(
 )
 
 renderLeaflet({
-  x <- data_frame(Pickup_longitude= input$lng, Pickup_latitude= input$lat)
+  x <- data_frame(LONGITUDE= input$lng, LATITUDE= input$lat)
   (cluster_num <- cl_predict(data_kmeans,x))
 
   result <- data1 %>% filter(cluster==cluster_num)
 
 
   round_num <- 3
-  top20 <- result %>% group_by(lng=round(Pickup_longitude,round_num),lat=round(Pickup_latitude,round_num)) %>% 
+  top20 <- result %>% group_by(lng=round(LONGITUDE,round_num),lat=round(LATITUDE,round_num)) %>% 
   count() %>% arrange(desc(n)) %>% head(20)
   top20 %>% 
   leaflet() %>% 
   addProviderTiles(providers$Esri.NatGeoWorldMap) %>%
   addCircleMarkers(~lng, ~lat, radius = 1,
                    color = "firebrick", fillOpacity = 0.001)%>%
-  addMarkers(~lng, ~lat, icon = greentaxi2, label = ~as.character(paste("Number of Pick ups:",top20$n)))
+  addMarkers(~lng, ~lat, label = ~as.character(paste("Number of Accidents:",top20$n)))
 
 })
 
 renderPrint({
-  x <- data_frame(Pickup_longitude= input$lng, Pickup_latitude= input$lat)
+  x <- data_frame(LONGITUDE= input$lng, LATITUDE= input$lat)
   (cluster_num <- cl_predict(data_kmeans,x))
 
   result <- data1 %>% filter(cluster==cluster_num)
 
 
   round_num <- 3
-  top20 <- result %>% group_by(lng=round(Pickup_longitude,round_num),lat=round(Pickup_latitude,round_num)) %>% 
+  top20 <- result %>% group_by(lng=round(LONGITUDE,round_num),lat=round(LATITUDE,round_num)) %>% 
   count() %>% arrange(desc(n)) %>% head(20)
   dist <- list()
   for (i in 1:20) {
@@ -151,18 +138,18 @@ renderPrint({
 
   num <- dist %>% which.min()
 
-  paste("The closest pick up spot is at the coordinate - Longitude:",top20[num,1]," Latitude: ",top20[num,2])
+  paste("The closest accident spot is at the coordinate - Longitude:",top20[num,1]," Latitude: ",top20[num,2])
 })
 
 renderLeaflet({
-  x <- data_frame(Pickup_longitude= input$lng, Pickup_latitude= input$lat)
+  x <- data_frame(LONGITUDE= input$lng, LATITUDE= input$lat)
   (cluster_num <- cl_predict(data_kmeans,x))
 
   result <- data1 %>% filter(cluster==cluster_num)
 
 
   round_num <- 3
-  top20 <- result %>% group_by(lng=round(Pickup_longitude,round_num),lat=round(Pickup_latitude,round_num)) %>% 
+  top20 <- result %>% group_by(lng=round(LONGITUDE,round_num),lat=round(LATITUDE,round_num)) %>%
   count() %>% arrange(desc(n)) %>% head(20)
   dist <- list()
   for (i in 1:20) {
@@ -171,12 +158,12 @@ renderLeaflet({
 
   num <- dist %>% which.min()
 
-  top20[num,] %>% 
-  leaflet() %>% 
+  top20[num,] %>%
+  leaflet() %>%
   addProviderTiles(providers$Esri.NatGeoWorldMap) %>%
   addCircleMarkers(~lng, ~lat, radius = 1,
                    color = "firebrick", fillOpacity = 0.001)%>%
-  addMarkers(~lng, ~lat, icon = greentaxi2, label = ~as.character(paste("Number of Pick ups:",top20$n)))
+  addMarkers(~lng, ~lat, label = ~as.character(paste("Number of Accidents:",top20$n)))
 
 
 })

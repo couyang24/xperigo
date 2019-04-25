@@ -27,7 +27,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 3. Find out the insight from the dataset (i.e. Location/ Time of Day).
 
-4. Find out the potential car accident area given the current car location.
+4. Find out the potential car accident area given the current location.
 
 This time, I would leverage the power of **R** and **Python** to perform the analysis and present the result via both Rmarkdown (R) and jupiter notebook (python). The analysis would be based on a standard data science framework and answer the questions above; however, I would extend the scope of the analysis to identify any unique insight as well as provide detailed explanation of my code.
 
@@ -58,7 +58,7 @@ and **`r ncol(data)`** variables(columns).
 
 ```{r  message=FALSE, warning=FALSE}
 data %>% 
-  head(15) %>% 
+  # head(15) %>% 
   datatable(filter = 'top', options = list(
   pageLength = 15, autoWidth = TRUE
 ))
@@ -94,6 +94,7 @@ As the data range section shows, some data entries for latitude and longitude ar
 
 ```{r  message=FALSE, warning=FALSE}
 data <- data %>% filter(LATITUDE>0, LONGITUDE<-72, LONGITUDE>-75)
+write_csv(data,"processed.csv")
 ```
 
 
@@ -262,7 +263,7 @@ ggplotly(data %>%
 
 ```
 
-## Top 5 Accidents Locations on Weekdays and Weekend
+## Top 5 Accident Locations on Weekdays and Weekend
 
 ### Basic Set up
 
@@ -283,31 +284,13 @@ Weekend_Top5 <- data %>% filter(weekend=='Weekend') %>%
   count() %>% arrange(desc(n)) %>% head(5)
 
 greentaxi <- makeIcon(
-  iconUrl = "https://i.imgur.com/6rw618Q.png",
+  iconUrl = "https://i.imgur.com/UVfnHVr.png",
   iconWidth = 38, iconHeight = 35,
   iconAnchorX = 19, iconAnchorY = 39
 )
 ```
 
-### Weekday Top 5 Pick up locations
-
-
-There are the top 5 pick up locations during weekdays.
-
-
-1. 71st Ave and Queens Blvd. (13,987 pick ups in Feb 2016)
-
-
-2. E 125th St and Park Ave. (13,235 pick ups in Feb 2016)
-
-
-3. Broad Way and Roosevelt Ave. (12,566 pick ups in Feb 2016)
-
-
-4. Madison Ave and E 101st St. (7,198 pick ups in Feb 2016)
-
-
-5. Bedford Ave and N 7th St. (6,105 pick ups in Feb 2016)
+### Weekday Top 5 Accident locations
 
 
 ```{r  message=FALSE, warning=FALSE}
@@ -328,22 +311,7 @@ Weekday_Top5 %>%
 ```
 
 
-### Weekend Top 5 Pick locations
-
-
-1. Broad Way and Roosevelt Ave. (6,465 pick ups in Feb 2016)
-
-
-2. 71st Ave and Queens Blvd. (5,249 pick ups in Feb 2016)
-
-
-3. E 125th St and Park Ave. (4,788 pick ups in Feb 2016)
-
-
-4. Wythe Ave and N 11th St. (4,507 pick ups in Feb 2016)
-
-
-5. Bedford Ave and N 7th St. (2,768 pick ups in Feb 2016)
+### Weekend Top 5 Accident locations
 
 
 ```{r  message=FALSE, warning=FALSE}
@@ -367,14 +335,11 @@ Weekend_Top5 %>%
 # Step 5 Modelling
 
 
-To recommend a pick up spot, I leverage the power of unsupervised learning by using a simple Kmeans model to group the pick up spots into 50 groups. Each of the pick up locations
+To recommend a potential accident spot, I leverage the power of unsupervised learning by using a simple Kmeans model to group the accident spots into 50 groups. Each of the accident locations
 
 
-## Recommend to Find Pick Up Spot
+## Recommend to Find Next Accident Spot
 ### Preprocess the data
-
-
-According to the dictionary, there are two types of trip - street-hail and dispatch. For this question, we should only focus on the street-hail and exclude the dispatches. 
 
 
 ```{r  message=FALSE, warning=FALSE}
@@ -386,9 +351,9 @@ I used kmeans model to classify the coordinates into 50 groups.
 
 ```{r results='hide', message=FALSE, warning=FALSE}
 set.seed(0)
-data_kmeans <- data_coord %>% kmeans(50,nstart=20)
-# save(data_kmeans, file = "data_kmeans.rda")
-# load("data_kmeans.rda")
+# data_kmeans <- data_coord %>% kmeans(50,nstart=20)
+# save(data_kmeans, file = "input/data_kmeans.rda")
+load("input/data_kmeans.rda")
 
 
 data1$cluster <- data_kmeans$cluster
@@ -398,10 +363,8 @@ pal <- colorNumeric(
   domain = data$cluster)
 ```
 
-I sampled 10,000 observations and put them on the map.
 
-
-So far, I answered the first three questions. To answer the last question, I would leverage the power of shiny app and make an interactive graph with the input option for longitude and latitude. Then, I would use the kmeans model to predict which cluster the input location would be in and focus on the pickup points within that cluster. Final, I would pick top 20 pick up points to recommend and the coordinate of the closest pick up spot among the Top 20.
+For the last objective, I would leverage the power of shiny app and make an interactive graph with the input option for longitude and latitude. Then, I would use the kmeans model to predict which cluster the input location would be in and focus on the accident points within that cluster. Final, I would pick top 20 accident points to recommend and the coordinate of the closest accident spot among the Top 20.
 
 Please found these result from the Shiny app below.
 
@@ -426,11 +389,11 @@ data1 %>% sample_n(size=10000) %>%
 # Shiny App
 
 
-## The final mission to Answer Question 4
+## The final mission for objective 4
 
-I set up the input options for longitude and latitude with sliders. Once that data is input, the program would make a prediction, for which cluster it belongs to, based on the input and kmeans model. Then, it would give 20 recommended pick up spots within the cluster as well as the closest pick up spot among the Top 20.
+I set up the input options for longitude and latitude with sliders. Once that data is input, the program would make a prediction, for which cluster it belongs to, based on the input and kmeans model. Then, it would give 20 recommended accident spots within the cluster as well as the closest accident spot among the Top 20.
 
-**Please be awared that the graph below is just the screenshot of the actual interactive graph, since Shiny app is not available on Kaggle at the moment.**
+**Please be awared that the graph below is just the screenshot of the actual interactive app, since Shiny app is only available on the website host or showing via Rmarkdown.**
 
 ```{r echo=FALSE}
 # 
@@ -525,7 +488,7 @@ I set up the input options for longitude and latitude with sliders. Once that da
 # })
 ```
 
-<img src="https://i.imgur.com/q1cnnJb.png">
+<img src="https://i.imgur.com/A2g8WF1.png">
 
 
 
