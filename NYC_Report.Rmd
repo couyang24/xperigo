@@ -178,118 +178,86 @@ Weekend has value Weekday and Weekend.
 data <- data %>%
          mutate(dateTime = mdy_hm(paste(DATE, TIME, sep = ' ')),
          weekday=as.factor(weekdays(dateTime)),
-         weekend=if_else(weekday=='Saturday'|weekday=='Sunday','Weekend','Weekday'))
+         weekend=if_else(weekday=='Saturday'|weekday=='Sunday','Weekend','Weekday'),
+         hour = hour(dateTime)+1)
 
 ```
 
 # Step 4 Perform Exploratory Data Analysis (EDA)
 
-## The Distribution of Distance{.tabset .tabset-fade .tabset-pills}
 
-### Raw
-
-First of all, let's have an overview on the distance data. As the graph below, the data is skewed by the distance outliers. 
+## Visualize Number of Accident by Time of Day
 
 
-```{r results='hide', message=FALSE, warning=FALSE}
-data %>%
-  ggplot(aes(Trip_distance)) +
-  geom_histogram(fill = "firebrick", bins = 150) +
-  theme_economist() +
-  labs(title='Green Taxi Case Study',subtitle='Initial Historgram of Distance',caption="source: NYC Green Taxi Data",
-       x="Travel Distance")
-```
+### Number of Accident by Time of Day for both Weekday and Weekend
 
 
-### Processed
-
-
-After processing the data, I got an almost normal distribution with some more few distance trips.
-
-
-```{r results='hide', message=FALSE, warning=FALSE}
-data %>%
-  ggplot(aes(Trip_distance)) +
-  geom_histogram(fill = "firebrick", bins = 150) +
-  scale_x_log10() +
-  theme_economist() +
-  labs(title='Green Taxi Case Study',subtitle='Processed Historgram of Distance',caption="source: NYC Green Taxi Data",
-       x="Travel Distance (log)")
-```
-
-
-## Visualize Trip Distance by Time of Day
-
-
-### Median Trip Distance by Time of Day for both Weekday and Weekend
-
-
-From an initial look at the trip distance by time of day graph, the median trip distance is longer at 6 AM and 7 AM than any other time during the day. The difference between the two hours and the rest of the day is quite significant.
+From an initial look at the number of accident by time of day graph, most of the accidents happened during the day with the peak ocurring around hour ending 17~18. The difference between the 8 and 9 is quite significant.
 
 
 ```{r  message=FALSE, warning=FALSE}
-ggplotly(data %>% group_by(pickup_hour) %>% summarise(avg_trip_distance=median(Trip_distance)) %>% 
-  ggplot(aes(pickup_hour, avg_trip_distance, fill = avg_trip_distance)) + geom_col() +
-  geom_label(aes(label=round(avg_trip_distance,1)), size=3.5, alpha=.7) +
+ggplotly(data %>% group_by(hour) %>% summarise(num_accident=n()) %>% 
+  ggplot(aes(hour, num_accident, fill = num_accident)) + geom_col() +
+  geom_label(aes(label=round(num_accident,1)), size=3.5, alpha=.7) +
   # coord_flip() +
   scale_x_continuous(breaks=seq(1,24,1)) +
   theme_economist() +
   theme(legend.position = 'none') +
-  labs(title='Median Trip Distance',subtitle='All Data Included (Weekday and Weekdend)',caption="source: Green Taxi Data",
-       y="Average Trip Distance", x="Time of Day (Pickup)"))
+  labs(title='Number of Accidents (Weekday and Weekdend)',subtitle='All Data Included (Weekday and Weekdend)',caption="source: Kaggle Open Source Data",
+       y="Number of Accidents", x="Time of Day"))
 ```
 
 
-### Median Trip Distance by Time of Day for Weekday
+### Number of Accident by Time of Day for Weekday
 
 
-Same as the observation from the full dataset, 6 AM and 7 AM are still the two hour that people take taxi for the longest median trip distance. However, in this case, the median trip distance is slightly longer at 6 AM. At that day of the weekday, my assumption is most of the taxi usage is caused by the commute to go to work. Since people usually start work at 8 AM, one of the potential explanation is that people who live further from their work place tend to leave a bit earlier than the people who live close by. Moreover, it might also cause by that more people take taxi to work at 6 AM compared to 7 AM. Therefore, the median trip distance is slightly longer at 6 AM than 7 AM.
+Same as the observation from the full dataset, a slightly higher peak in the morning, which is presumably caused by the rush hours.
 
 
 ```{r  message=FALSE, warning=FALSE}
-ggplotly(data %>% filter(pickup_weekend=='Weekday') %>% group_by(pickup_hour) %>% summarise(avg_trip_distance=median(Trip_distance)) %>% 
-  ggplot(aes(pickup_hour, avg_trip_distance, fill = avg_trip_distance)) + geom_col() +
-  geom_label(aes(label=round(avg_trip_distance,1)), size=3.5, alpha=.7) +
+ggplotly(data %>% filter(weekend=='Weekday') %>% group_by(hour) %>% summarise(num_accident=n()) %>% 
+  ggplot(aes(hour, num_accident, fill = num_accident)) + geom_col() +
+  geom_label(aes(label=round(num_accident,1)), size=3.5, alpha=.7) +
   # coord_flip() +
   scale_x_continuous(breaks=seq(1,24,1)) +
   theme_economist() +
   theme(legend.position = 'none') +
-  labs(title='Median Trip Distance',subtitle='Weekday',caption="source: Green Taxi Data",
-       y="Average Trip Distance", x="Time of Day (Pickup)"))
+  labs(title='Number of Accidents (Weekday)',
+       y="Number of Accidents", x="Time of Day"))
 
 ```
 
 
-### Median Trip Distance by Time of Day for Weekend
+### Number of Accident by Time of Day for Weekend
 
 
-For the weekend, 7 AM and 8 AM turned out to be the two hours that have the longest trip distance. Additionally, the difference between the two hours and the rest of the day is not as significant as for the weekdays. My speculation is that people tend to sleep in, since they don't have to go to work in the early morning. Therefore, the longest median trip distance is postponed one hour as well as the difference is not as significant as the weekdays.
+For the weekend, the pattern changed and the peak is ocurring between hour ending 15 to 17.
 
 
 ```{r  message=FALSE, warning=FALSE}
-ggplotly(data %>% filter(pickup_weekend=='Weekend') %>% group_by(pickup_hour) %>% summarise(avg_trip_distance=median(Trip_distance)) %>% 
-  ggplot(aes(pickup_hour, avg_trip_distance, fill = avg_trip_distance)) + geom_col() +
-  geom_label(aes(label=round(avg_trip_distance,1)), size=3.5, alpha=.7) +
+ggplotly(data %>% filter(weekend=='Weekend') %>% group_by(hour) %>% summarise(num_accident=n()) %>% 
+  ggplot(aes(hour, num_accident, fill = num_accident)) + geom_col() +
+  geom_label(aes(label=round(num_accident,1)), size=3.5, alpha=.7) +
   # coord_flip() +
   scale_x_continuous(breaks=seq(1,24,1)) +
   theme_economist() +
   theme(legend.position = 'none') +
-  labs(title='Median Trip Distance',subtitle='Weekend',caption="source: Green Taxi Data",
-       y="Average Trip Distance", x="Time of Day (Pickup)"))
+  labs(title='Number of Accidents (Weekend)',
+       y="Number of Accidents", x="Time of Day"))
 ```
 
 
-### Combined Weekday and Weekend Median Trip Distance
+### Combined Weekday and Weekend Number of Accident
 
 
 ```{r  message=FALSE, warning=FALSE}
 ggplotly(data %>%
-  group_by(pickup_hour, pickup_weekend) %>%
-  summarise(avg_trip_distance=median(Trip_distance)) %>%
-  ggplot(aes(pickup_hour, avg_trip_distance, color = pickup_weekend)) +
+  group_by(hour, weekend) %>%
+  summarise(num_accident=n()) %>%
+  ggplot(aes(hour, num_accident, color = weekend)) +
   geom_smooth(method = "loess", span = 1/2, se=F) +
   geom_point(size = 4) +
-  labs(x = "Time of Day (Pickup)", y = "Average Trip Distance") +
+  labs(x = "Time of Day", y = "Number of Accidents") +
   scale_x_continuous(breaks=seq(1,24,1)) +
   theme_economist() +
   scale_color_discrete("Weekday vs. Weekend"))
@@ -297,23 +265,23 @@ ggplotly(data %>%
 
 ```
 
-## Top 5 Pick Up Locations on Weekdays and Weekend
+## Top 5 Accidents Locations on Weekdays and Weekend
 
 ### Basic Set up
 
 
-Rather than directing calculating the top 5 pick up locations, I preprocessed the data a little bit. The logic is that if I directly use the longitude and latitude data, the same pick up spot with slightly different coordinates would be treated as different pick up locations and that would definitely deviate from the actual result. Therefore, I round the longitude and latitude to the 3 decimals from which the coordinates with slightly different number would be treated as one spot. I also used a green cab icon to denote the pick up spots. The graph is interactive and can be zoom in and out. If you place the mouse on the green cab icon, it would show how many pick ups at the location based on the dataset.
+Rather than directing calculating the top 5 Accidents locations, I preprocessed the data a little bit. The logic is that if I directly use the longitude and latitude data, the same pick up spot with slightly different coordinates would be treated as different pick up locations and that would definitely deviate from the actual result. Therefore, I round the longitude and latitude to the 3 decimals from which the coordinates with slightly different number would be treated as one spot. I also used a green cab icon to denote the accident spots. The graph is interactive and can be zoom in and out. If you place the mouse on the green cab icon, it would show how many accidents at the location based on the dataset.
 
 
 ```{r  message=FALSE, warning=FALSE}
 round_num <- 3
 
-Weekday_Top5 <- data %>% filter(pickup_weekend=='Weekday') %>% 
+Weekday_Top5 <- data %>% filter(weekend=='Weekday') %>% 
   group_by(lng=round(LONGITUDE,round_num),lat=round(LATITUDE,round_num)) %>% 
   count() %>% arrange(desc(n)) %>% head(5)
 
 
-Weekend_Top5 <- data %>% filter(pickup_weekend=='Weekend') %>% 
+Weekend_Top5 <- data %>% filter(weekend=='Weekend') %>% 
   group_by(lng=round(LONGITUDE,round_num),lat=round(LATITUDE,round_num)) %>% 
   count() %>% arrange(desc(n)) %>% head(5)
 
@@ -348,16 +316,16 @@ There are the top 5 pick up locations during weekdays.
 ```{r  message=FALSE, warning=FALSE}
 Weekday_Top5 %>%
   leaflet() %>% 
-  addProviderTiles(providers$Esri.NatGeoWorldMap, group = "color map") %>%
+  addProviderTiles(providers$HikeBike.HikeBike, group = "color map") %>%
   addProviderTiles(providers$CartoDB.Positron, group = "Light map") %>%
-  addProviderTiles(providers$Stamen.Toner, group = "white map") %>% 
+  # addProviderTiles(providers$Stamen.Toner, group = "white map") %>% 
   addScaleBar() %>%
   addProviderTiles(providers$Esri.NatGeoWorldMap) %>%
   addCircleMarkers(~lng, ~lat, radius = 1,
                    color = "firebrick", fillOpacity = 0.001) %>%
-  addMarkers(~lng, ~lat, icon = greentaxi, label = ~as.character(paste("Number of Pick ups:",Weekday_Top5$n))) %>%
+  addMarkers(~lng, ~lat, icon = greentaxi, label = ~as.character(paste("Number of Accidents:",Weekday_Top5$n))) %>%
   addLayersControl(
-    baseGroups = c("Color map", "Light map","white map"),
+    baseGroups = c("Color map", "Light map"),
     options = layersControlOptions(collapsed = FALSE)
   )
 ```
@@ -384,16 +352,16 @@ Weekday_Top5 %>%
 ```{r  message=FALSE, warning=FALSE}
 Weekend_Top5 %>%
   leaflet() %>% 
-  addProviderTiles(providers$Esri.NatGeoWorldMap, group = "color map") %>% 
+  addProviderTiles(providers$HikeBike.HikeBike, group = "color map") %>% 
   addProviderTiles(providers$CartoDB.Positron, group = "Light map") %>%
-  addProviderTiles(providers$Stamen.Toner, group = "white map") %>% 
+  # addProviderTiles(providers$Stamen.Toner, group = "white map") %>% 
   addScaleBar() %>% 
   addProviderTiles(providers$Esri.NatGeoWorldMap) %>%
   addCircleMarkers(~lng, ~lat, radius = 1,
                    color = "firebrick", fillOpacity = 0.001) %>%
-  addMarkers(~lng, ~lat, icon = greentaxi, label = ~as.character(paste("Number of Pick ups:",Weekend_Top5$n))) %>%
+  addMarkers(~lng, ~lat, icon = greentaxi, label = ~as.character(paste("Number of Accidents:",Weekend_Top5$n))) %>%
   addLayersControl(
-    baseGroups = c("Color map", "Light map", "white map"),
+    baseGroups = c("Color map", "Light map"),
     options = layersControlOptions(collapsed = FALSE)
   )
 ```
@@ -413,8 +381,8 @@ According to the dictionary, there are two types of trip - street-hail and dispa
 
 
 ```{r  message=FALSE, warning=FALSE}
-data_coord <- data %>% filter(Trip_type==1) %>% select(LONGITUDE, LATITUDE)
-data1 <- data %>% filter(Trip_type==1)
+data_coord <- data %>% select(LONGITUDE, LATITUDE)
+data1 <- data
 ```
 
 I used kmeans model to classify the coordinates into 50 groups.
@@ -442,14 +410,14 @@ Please found these result from the Shiny app below.
 set.seed(0)
 data1 %>% sample_n(size=10000) %>% 
   leaflet() %>% 
-  addProviderTiles(providers$Esri.NatGeoWorldMap, group = "color map") %>%
+  addProviderTiles(providers$HikeBike.HikeBike, group = "color map") %>%
   addProviderTiles(providers$CartoDB.Positron, group = "Light map") %>%
-  addProviderTiles(providers$Stamen.Toner, group = "white map") %>% 
+  # addProviderTiles(providers$Stamen.Toner, group = "white map") %>% 
   addScaleBar() %>%
   addCircleMarkers(~LONGITUDE, ~LATITUDE, radius = 1,
                    color = ~pal(cluster), fillOpacity = 0.001) %>%
   addLayersControl(
-    baseGroups = c("Color map", "Light map", "white map"),
+    baseGroups = c("Color map", "Light map"),
     options = layersControlOptions(collapsed = FALSE)
   )
 ```
