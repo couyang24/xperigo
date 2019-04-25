@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Step 1: Define the Problem
-**Requirement:**
+**Objectives:**
 
 1. Download the data, and load it in Pycharm and provide initial overview information.
 
@@ -27,11 +27,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 3. Find out the insight from the dataset (i.e. Location/ Time of Day).
 
-4. Take Weather Data into Consideration.
+4. Find out the potential car accident area given the current car location.
 
-5. Find out the potential car accident area given the current car location.
-
-This time, I would leverage the power of R and Python to perform the analysis and present the result via both Rmarkdown (R) and jupiter notebook (python). The analysis would be based on a standard data science framework and answer the questions above; however, I would extend the scope of the analysis to identify any unique insight as well as provide detailed explanation of my code.
+This time, I would leverage the power of **R** and **Python** to perform the analysis and present the result via both Rmarkdown (R) and jupiter notebook (python). The analysis would be based on a standard data science framework and answer the questions above; however, I would extend the scope of the analysis to identify any unique insight as well as provide detailed explanation of my code.
 
 # Step 3: Preprocess the Data
 
@@ -46,22 +44,21 @@ pacman::p_load(tidyverse, DT, lubridate, leaflet, leaflet.extras, maps, data.tab
 ### Required Dataset
 
 ```{r results='hide', message=FALSE, warning=FALSE}
-# Initially use read.csv then write the file so that going forward I can use fread
-data <- read.csv("input/NYPD_Motor_Vehicle_Collisions.csv", stringsAsFactors = F)
+data <- read.csv("input/NYPD_Motor_Vehicle_Collisions.csv", stringsAsFactors = F) %>% select(DATE, TIME, LATITUDE, LONGITUDE)
 ```
 
 ## First Glimpse{.tabset .tabset-fade .tabset-pills}
 
 
-The first question can be answered by looking at the structure of the dataset. The dataset has `r nrow(data)` observations(rows) 
-and `r ncol(data)` variables(columns).
+The first question can be answered by looking at the structure of the dataset. The dataset has **`r format(nrow(data), scientific =F, big.mark=",")`** observations(rows) 
+and **`r ncol(data)`** variables(columns).
 
 
-### First 20 rows with selected columns
+### First 15 rows with selected columns
 
 ```{r  message=FALSE, warning=FALSE}
 data %>% 
-  head(100) %>% 
+  head(15) %>% 
   datatable(filter = 'top', options = list(
   pageLength = 15, autoWidth = TRUE
 ))
@@ -103,7 +100,7 @@ data <- data %>% filter(LATITUDE>0, LONGITUDE<-72, LONGITUDE>-75)
 # Interactive Map
 
 
-Looking at the summary result, I got the map below. It is very interesting to see that all the pick up location are outside of the core area of New York City. By doing a little research, I found out that the green taxi are only allowed to pick up passengers (street hails or calls) in outer boroughs (excluding John F. Kennedy International Airport and LaGuardia Airport unless arranged in advance) and in Manhattan above East 96th and West 110th Streets. That explains the pattern we see here.
+Looking at the summary result, I got the map below, which takes 5,000 examples. 
 
 
 ```{r  message=FALSE, warning=FALSE}
@@ -390,6 +387,9 @@ I used kmeans model to classify the coordinates into 50 groups.
 ```{r results='hide', message=FALSE, warning=FALSE}
 set.seed(0)
 data_kmeans <- data_coord %>% kmeans(50,nstart=20)
+# save(data_kmeans, file = "data_kmeans.rda")
+# load("data_kmeans.rda")
+
 
 data1$cluster <- data_kmeans$cluster
 
