@@ -1,5 +1,5 @@
 ---
-title: "Green Taxi Case Study Part2"
+title: "NYC Part2"
 author: "Chengran Ouyang"
 date: "`r format(Sys.Date())`"
 output:
