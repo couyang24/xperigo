@@ -1,5 +1,9 @@
 ---
+<<<<<<< HEAD
+title: "NYC Part2"
+=======
 title: "NYC Car Accident Analysis - Part2"
+>>>>>>> c7267ce282a7f5e34d1bc9479a63a0ac4a9b038f
 author: "Chengran Ouyang"
 date: "`r format(Sys.Date())`"
 output:

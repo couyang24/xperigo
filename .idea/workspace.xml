@@ -3,6 +3,13 @@
   <component name="ChangeListManager">
 <<<<<<< HEAD
     <list default="true" id="eadd8d3b-7aee-4787-8299-950014bf7336" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NYC_Report.Rmd" beforeDir="false" afterPath="$PROJECT_DIR$/NYC_Report.Rmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NYC_Shiny.Rmd" beforeDir="false" afterPath="$PROJECT_DIR$/NYC_Shiny.Rmd" afterDir="false" />
+    </list>
+=======
+<<<<<<< HEAD
+    <list default="true" id="eadd8d3b-7aee-4787-8299-950014bf7336" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/main-Copy1-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/main-Copy1-checkpoint.ipynb" afterDir="false" />
@@ -11,6 +18,7 @@
 =======
     <list default="true" id="eadd8d3b-7aee-4787-8299-950014bf7336" name="Default Changelist" comment="" />
 >>>>>>> e76d780454f26eb63db1c283ca7a29e69503b719
+>>>>>>> c7267ce282a7f5e34d1bc9479a63a0ac4a9b038f
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,12 +71,16 @@
   </component>
 <<<<<<< HEAD
   <component name="ProjectFrameBounds" extendedState="6">
+=======
+<<<<<<< HEAD
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-105" />
     <option name="y" value="-8" />
     <option name="width" value="1936" />
     <option name="height" value="1097" />
 =======
   <component name="ProjectFrameBounds" extendedState="7">
+>>>>>>> c7267ce282a7f5e34d1bc9479a63a0ac4a9b038f
     <option name="x" value="-468" />
     <option name="y" value="-9" />
     <option name="width" value="1937" />
@@ -159,7 +171,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="840" extended-state="7" />
+    <frame x="-7" y="-7" width="1550" height="840" extended-state="6" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24917382" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -179,7 +191,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32846716" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32846716" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />

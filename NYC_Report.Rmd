@@ -244,7 +244,7 @@ ggplotly(data %>% filter(weekend=='Weekend') %>% group_by(hour) %>% summarise(nu
 ```
 
 
-### Combined Weekday and Weekend Number of Accident
+### Combined Weekday and Weekend Number of Accidents
 
 
 ```{r  message=FALSE, warning=FALSE}
