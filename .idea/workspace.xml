@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="eadd8d3b-7aee-4787-8299-950014bf7336" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/main-Copy1-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/main-Copy1-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main-Copy1.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/main-Copy1.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main-Copy2.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/main-Copy2.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/main.ipynb" afterDir="false" />
-    </list>
+    <list default="true" id="eadd8d3b-7aee-4787-8299-950014bf7336" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +28,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="-468" />
     <option name="y" value="-9" />
     <option name="width" value="1937" />
@@ -60,11 +54,6 @@
               <item name="xperigo" type="b2602c69:ProjectViewProjectNode" />
               <item name="xperigo" type="462c0819:PsiDirectoryNode" />
               <item name=".ipynb_checkpoints" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="xperigo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="xperigo" type="462c0819:PsiDirectoryNode" />
-              <item name="input" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -120,7 +109,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="840" extended-state="6" />
+    <frame x="-7" y="-7" width="1550" height="840" extended-state="7" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24917382" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
