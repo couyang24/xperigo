@@ -21,7 +21,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # Step 1: Define the Problem
 **Objectives:**
 
-1. Download the data, and load it in Pycharm and provide initial overview information.
+1. Download the data, and load it in **R Studio** & **Pycharm** and provide initial overview information.
 
 2. Visualize the location of the car accidents.
 
@@ -29,7 +29,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 4. Find out the potential car accident area given the current location.
 
-This time, I would leverage the power of **R** and **Python** to perform the analysis and present the result via both Rmarkdown (R) and jupiter notebook (python). The analysis would be based on a standard data science framework and answer the questions above; however, I would extend the scope of the analysis to identify any unique insight as well as provide detailed explanation of my code.
+This time, I would leverage the power of **R** and **Python** to perform the analysis and present the result via both **Rmarkdown (R)** and **jupiter notebook (python)**. The analysis would be based on a standard data science framework and answer the questions above; however, I would extend the scope of the analysis to identify any unique insight as well as provide detailed explanation of my code.
 
 # Step 3: Preprocess the Data
 
